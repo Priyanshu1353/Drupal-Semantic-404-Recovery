@@ -1,0 +1,77 @@
+version: "3.9"
+
+networks:
+  semantic_net:
+    driver: bridge
+
+services:
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # drupal_web: PHP 8.3 + Apache serving Drupal 10
+  # ─────────────────────────────────────────────────────────────────────────
+  drupal_web:
+    image: drupal:10-php8.3-apache
+    container_name: drupal_web
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      DRUPAL_DB_HOST: db
+      DRUPAL_DB_PORT: "3306"
+      DRUPAL_DB_NAME: drupal
+      DRUPAL_DB_USER: drupal
+      DRUPAL_DB_PASSWORD: drupal_secret
+    volumes:
+      - drupal_data:/var/www/html
+      - ./web/modules/custom:/var/www/html/modules/custom
+      - ./web/themes/custom:/var/www/html/themes/custom
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - semantic_net
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # ai_engine: Python 3.11 FastAPI semantic matching service
+  # ─────────────────────────────────────────────────────────────────────────
+  ai_engine:
+    build:
+      context: ./ai_engine
+      dockerfile: Dockerfile
+    container_name: ai_engine
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    networks:
+      - semantic_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # db: MySQL 8 database for Drupal
+  # ─────────────────────────────────────────────────────────────────────────
+  db:
+    image: mysql:8.0
+    container_name: drupal_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: drupal
+      MYSQL_PASSWORD: drupal_secret
+      MYSQL_ROOT_PASSWORD: root_secret
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - semantic_net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  drupal_data:
+  db_data:
