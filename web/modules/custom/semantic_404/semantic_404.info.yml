@@ -1,0 +1,8 @@
+name: 'Semantic 404 Recovery'
+description: 'Replaces standard 404 pages with AI-driven content suggestions powered by a FastAPI semantic engine.'
+type: module
+core_version_requirement: ^10 || ^11
+package: Custom
+dependencies:
+  - drupal:block
+  - drupal:node
