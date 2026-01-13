@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * Semantic 404 Recovery module – hook implementations.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function semantic_404_help($route_name, RouteMatchInterface $route_match) {
+  if ($route_name === 'help.page.semantic_404') {
+    return '<p>' . t('Provides AI-driven content suggestions on 404 pages via a FastAPI semantic engine.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function semantic_404_theme() {
+  return [
+    'semantic_404_card' => [
+      'variables' => [
+        'title'   => NULL,
+        'url'     => NULL,
+        'snippet' => NULL,
+        'score'   => NULL,
+      ],
+      'template' => 'semantic-404-card',
+    ],
+  ];
+}

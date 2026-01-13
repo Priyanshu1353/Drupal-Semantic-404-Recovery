@@ -1,0 +1,5 @@
+semantic_404/global-styles:
+  version: 1.x
+  css:
+    theme:
+      css/semantic_404.css: {}
