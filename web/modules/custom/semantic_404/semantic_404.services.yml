@@ -1,0 +1,7 @@
+services:
+  semantic_404.semantic_matcher:
+    class: Drupal\semantic_404\Service\SemanticMatcher
+    arguments:
+      - '@http_client'
+      - '@config.factory'
+      - '@logger.factory'
