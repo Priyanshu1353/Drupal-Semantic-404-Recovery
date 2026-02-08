@@ -1,0 +1,35 @@
+{#
+/**
+ * @file
+ * Template for the Semantic 404 Suggestion card.
+ *
+ * Available variables:
+ *   - title:   Suggested page title (string)
+ *   - url:     Suggested page URL path (string)
+ *   - snippet: Short description of the suggested page (string)
+ *   - score:   Confidence percentage 0-100 (integer)
+ */
+#}
+<div class="s404-card" role="complementary" aria-label="AI Page Suggestion">
+
+  <div class="s404-card__header">
+    <span class="s404-card__ai-badge">✨ Powered by AI</span>
+    <span class="s404-card__confidence-badge
+      {% if score >= 90 %}s404-card__confidence-badge--high{% elseif score >= 75 %}s404-card__confidence-badge--medium{% else %}s404-card__confidence-badge--low{% endif %}">
+      {{ score }}% match
+    </span>
+  </div>
+
+  <div class="s404-card__body">
+    <p class="s404-card__hint">{{ 'We couldn\'t find that page, but this might help:'|t }}</p>
+    <h2 class="s404-card__title">{{ title }}</h2>
+    <p class="s404-card__snippet">{{ snippet }}</p>
+  </div>
+
+  <div class="s404-card__footer">
+    <a href="{{ url }}" class="s404-card__cta" aria-label="{{ 'Go to %title'|t({'%title': title}) }}">
+      {{ 'Take me there'|t }} &rarr;
+    </a>
+  </div>
+
+</div>
